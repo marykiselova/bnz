@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, ModalController, NavController } from 'ionic-angular';
+import { IonicPage, ModalController, NavController, LoadingController } from 'ionic-angular';
 
 import { Item } from '../../models/item';
 import { Items } from '../../providers';
+import { Contact } from '../../models/contact';
 
 
 
@@ -13,11 +14,22 @@ import { Items } from '../../providers';
   templateUrl: 'list-master.html'
 })
 export class ListMasterPage {
-  currentItems: Item[];
+  currentItems: Contact[] = [];
 
-  constructor(public navCtrl: NavController, public items: Items, public modalCtrl: ModalController) {
-    var contacts= this.items.query();
-    console.log(contacts);
+  constructor(public navCtrl: NavController, public items: Items, public modalCtrl: ModalController, public loadingCtrl : LoadingController) {
+   
+    let loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    }); 
+
+    loading.present();
+    this.items.query().subscribe(((contacts)=> {
+    
+     this.currentItems = contacts;
+     loading.dismiss();
+     
+    }));
+    
     //this.currentItems = 
   }
 
